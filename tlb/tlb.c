@@ -61,7 +61,7 @@ int main(int argc, char *argv[]) {
 
     long long elapsed_ns = (end.tv_sec - start.tv_sec) * 1000000000LL + (end.tv_nsec - start.tv_nsec);
     double avg_time = (double)elapsed_ns / (num_tries * num_pages);
-    
+    printf("%d %.6f\n", num_pages, avg_time);
 
     /*struct timeval start, end;
     gettimeofday(&start, NULL);
