@@ -42,11 +42,7 @@ A: Don't have a Mac
 
 ##### Q: Let’s look at some timings. How long do you think the following execution, with one producer, three consumers, a single-entry shared buffer, and each consumer pausing at point c3 for a second, will take? ./main-two-cvs-while -p 1 -c 3 -m 1 -C 0,0,0,1,0,0,0:0,0,0,1,0,0,0:0,0,0,1,0,0,0 -l 10 -v -t
 
-A: 10s? But the output is 12s;
-  Test:
-
-* 2,2,2  22s
-* 5,5,5  60s
+A: But the output is 12s;
 
 ##### Q: Now change the size of the shared buffer to 3 (-m 3). Will this make any difference in the total time?
 
@@ -62,10 +58,21 @@ A: The output is 5s
 
 ##### Q: Now let’s look at main-one-cv-while.c. Can you configure a sleep string, assuming a single producer, one consumer, and a buffer of size 1, to cause a problem with this code?
 
+A: 一读一写一般不会出现问题
 
+##### Q: Now change the number of consumers to two. Can you construct sleep strings for the producer and the consumers so as to cause a problem in the code?
 
-##### Now change the number of consumers to two. Can you construct sleep strings for the producer and the consumers so as to cause a problem in the code?
+A：有可能会出现问题，比如生产者先运行一次后，缓冲区变满，生产者陷入休眠，唤醒消费者1，消费者1运行一次后，唤醒了
+消费者2（这一步是随机的，既有可能唤醒生产者，也有可能唤醒消费者2），消费者1进入休眠，唤醒消费者2后，由于缓冲区
+为空，消费者2进入休眠
 
-##### Now examine main-two-cvs-if.c. Can you cause a problem to happen in this code? Again consider the case where there is only one consumer, and then the case where there is more than one.
+##### Q: Now examine main-two-cvs-if.c. Can you cause a problem to happen in this code? Again consider the case where there is only one consumer, and then the case where there is more than one.
 
-##### Finally, examine main-two-cvs-while-extra-unlock.c. What problem arises when you release the lock before doing a put or a get? Can you reliably cause such a problem to happen, given the sleep strings? What bad thing can happen?
+A：一个生产者一个消费者一般不会出现问题
+多个消费者会有问题：
+  生产者生产完成后，唤醒了消费者1，但是没有运行，而是调度到了消费者2，（消费者2此时是就绪状态，因为还没有运行过，没有进入睡眠），消费者2耗尽缓冲区，进入睡眠，消费者1醒来后，发现缓冲区为空，发生错误
+
+##### Q: Finally, examine main-two-cvs-while-extra-unlock.c. What problem arises when you release the lock before doing a put or a get? Can you reliably cause such a problem to happen, given the sleep strings? What bad thing can happen?
+
+A: 多个消费者的情况，会导致其中的几个消费者一直处于等待状态，无法消费数据
+./main-two-cvs-while-extra-unlock -p 1 -c 2 -m 3 -l 5 -v -C 0,0,0,0,1,0,0:0,0,0,0,0,0,0
