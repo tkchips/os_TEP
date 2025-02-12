@@ -1,3 +1,4 @@
+#include <semaphore.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
@@ -8,22 +9,41 @@
 //
 
 typedef struct __rwlock_t {
+    sem_t mutex, w;
+    ssize_t reader_count;
 } rwlock_t;
 
 
 void rwlock_init(rwlock_t *rw) {
+    Sem_init(&(rw->mutex), 1);
+    Sem_init(&(rw->w), 1);
+    rw->reader_count = 0;
 }
 
 void rwlock_acquire_readlock(rwlock_t *rw) {
+    Sem_wait(&(rw->mutex));
+    rw->reader_count++;
+    if (rw->reader_count == 1) {
+        Sem_wait(&(rw->w));
+    }
+    Sem_post(&(rw->mutex));
 }
 
 void rwlock_release_readlock(rwlock_t *rw) {
+    Sem_wait(&(rw->mutex));
+    rw->reader_count--;
+    if (rw->reader_count == 0) {
+        Sem_post(&(rw->w));
+    }
+    Sem_post(&(rw->mutex));
 }
 
 void rwlock_acquire_writelock(rwlock_t *rw) {
+    Sem_wait(&(rw->w));
 }
 
-void rwlock_release_writelock(rwlock_t *rw) {
+void rwlock_release_writelock(rwlock_t *rw) {;
+    Sem_post(&(rw->w));
 }
 
 //
