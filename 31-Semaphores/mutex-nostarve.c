@@ -76,9 +76,11 @@ void ns_mutex_acquire(ns_mutex_t *m) {
     Sem_wait(&(m->mutex));
     m->room1++;
     Sem_post(&(m->mutex));
+    
     Sem_wait(&(m->t1));
-    m->room2++;
+
     Sem_wait(&(m->mutex));
+    m->room2++;
     m->room1--;
     if (m->room1 == 0) {
         Sem_post(&(m->mutex));

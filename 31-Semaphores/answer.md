@@ -266,7 +266,7 @@ end: value 10
 A:
 ```c
 /* mutex-nostarve.c */
-
+ SEE THE CODE IN mutex-nostarve.c
 /*
 output:
 $ 
