@@ -1,4 +1,4 @@
-## 31 SENAPHORES
+## 32 Common Concurrency Problems
 
 ### Questions
 

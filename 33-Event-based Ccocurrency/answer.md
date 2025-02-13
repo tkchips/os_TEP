@@ -1,4 +1,4 @@
-## 31 SENAPHORES
+## 33 Event based Ccocurrency
 
 ### Homework (Code)
 
