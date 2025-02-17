@@ -6,9 +6,9 @@ This section introduces raid.py, a simple RAID simulator you can use to shore up
 
 ### Questions
 
-**Use the simulator to perform some basic RAID mapping tests. Run with different levels (0, 1, 4, 5) and see if you can figure out the mappings of a set of requests. For RAID-5, see if you can figure out the difference between left-symmetric and left-asymmetric layouts.**
+## TODO
 
-A: 
+**Use the simulator to perform some basic RAID mapping tests. Run with different levels (0, 1, 4, 5) and see if you can figure out the mappings of a set of requests. For RAID-5, see if you can figure out the difference between left-symmetric and left-asymmetric layouts.**
 
 **Use some different random seeds to generate different problems than above.**
 
